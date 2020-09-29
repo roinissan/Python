@@ -1,0 +1,65 @@
+
+Option Explicit
+
+Sub CreatePivotTable()
+    
+    Dim pc As PivotCache
+    Dim ws As Worksheet
+    Dim pt As PivotTable
+
+    
+    Set pc = ThisWorkbook.PivotCaches.Create( _
+        SourceType:=xlDatabase, _
+        SourceData:=Range("A1").CurrentRegion, _
+        Version:=xlPivotTableVersion15)
+        
+    Set ws = Worksheets.Add
+    ws.Name = "Sheet2"
+    Range("A3").Select
+    
+    Set pt = pc.CreatePivotTable( _
+        TableDestination:=ActiveCell, _
+        TableName:="Check")
+        
+    pt.AddFields _
+        RowFields:="TimeString", _
+        ColumnFields:="VarName"
+    
+    pt.AddDataField _
+        Field:=pt.PivotFields("VarValue"), _
+        Function:=XlConsolidationFunction.xlProduct
+        
+ 
+End Sub
+
+
+Sub CreatePivotChart()
+    Dim sh As Shape
+    Dim ws As Worksheet
+    Dim ch As Chart
+    Dim pt As PivotTable
+    
+    Set ws = Worksheets("Sheet2")
+    Set sh = ws.Shapes.AddChart2( _
+        XlChartType:=XlChartType.xlLine, _
+        Width:=500, Height:=500)
+    
+    Set ch = sh.Chart
+    Set pt = ws.PivotTables(1)
+    
+    ch.SetSourceData pt.TableRange2
+    ch.Axes(xlValue).MinimumScale = 0
+    ch.Axes(xlValue).MaximumScale = 80
+        
+    
+    
+End Sub
+
+
+Sub roi()
+
+    CreatePivotTable
+    CreatePivotChart
+    
+    
+End Sub

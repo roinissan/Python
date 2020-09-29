@@ -1,0 +1,6 @@
+openpyxl
+pandas
+numpy
+pivottablejs
+ipython
+python-docx
